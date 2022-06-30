@@ -1,21 +1,20 @@
 // TODO 
-// capslock + shift. Doesn't work
+// shift
 // weird behavior of textArea. If you typed something with your keyboard, 
 //                             you cannot write with the online keyboard
 // responsive
 
-let isCapsLock = false;
-let words = 0;
-
 // All keyboard chars
-const keyboardChars = ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE",
-    "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]",
+const keyboardChars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE",
+    "`", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]",
     "CAPS", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "\\", "ENTER",
     "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "?",
-    "SHIFT", "SPACE", "DELETE"
+    "SHIFT", "SPACE", "CLEAR"
 ];
 
-// console.log(isCapsLock);
+let isCapsLock = false;
+let isShift = false;
+let words = 0;
 
 // Create keyboard and add ".keyboard" class
 const div = document.createElement("div");
@@ -29,29 +28,22 @@ wrapperDiv.appendChild(div);
 const keyboardDiv = document.querySelector(".keyboard");
 let textArea = document.querySelector(".textArea textarea");
 let counter = document.querySelector(".counter");
+let buttons;
+let caps;
 
 // Create and display all keyboard chars
 keyboardChars.map((char) => {
+
     let character = document.createElement("button");
+    character.classList.add(`${char}-char`);
 
     // Break lines on this char
     const breakLinePoints = ["BACKSPACE", "]", "ENTER", "?"].indexOf(char) !== -1;
 
-    function checkCaps() {
-        if (isCapsLock) {
-            character.textContent = char.toUpperCase();
-            console.log(char);
-        }
-        else {
-            character.textContent = char;
-            console.log(char);
-        }
-    }
+    createChars(character, char);
 
-    // Add chars to keyboard
-    checkCaps();
-    keyboardDiv.appendChild(character);
-
+    caps = document.querySelector(".keyboard .CAPS-char");
+    buttons = document.querySelectorAll(".keyboard button");
 
     // breakpoints
     if (breakLinePoints) {
@@ -59,6 +51,7 @@ keyboardChars.map((char) => {
     }
 
     // Chars event
+    // może spróbuj tu switch case:
     character.addEventListener("click", () => {
         if (char == "CAPS") {
             capslock();
@@ -75,14 +68,18 @@ keyboardChars.map((char) => {
         else if (char == "ENTER") {
             enter();
         }
-        else if (char == "DELETE") {
-            deleteText();
+        else if (char == "CLEAR") {
+            clearText();
         }
         else
-            addCharToTextArea(char)
+            if (isCapsLock) {
+                addCharToTextArea(char.toUpperCase());
+            }
+            else if (!isCapsLock) {
+                addCharToTextArea(char);
+            }
 
         countWords();
-        checkCaps();
     });
 })
 
@@ -100,9 +97,9 @@ function backspace() {
         words = 0;
 }
 
-// delete all char
-function deleteText() {
-    console.log("Delete");
+// clear text area
+function clearText() {
+    console.log("Clear");
     words = 0;
     textArea.textContent = "";
 }
@@ -110,14 +107,22 @@ function deleteText() {
 // capslock char
 function capslock() {
     console.log("Capslock");
+    caps.classList.toggle("active");
+
+    buttons.forEach((btn) => {
+        btn.classList.toggle("upper")
+    })
+
     isCapsLock = !isCapsLock;
     words += -1;
-}
 
+
+}
 
 // shift char
 function shift() {
     console.log("Shift");
+    isShift = !isShift;
     words += -1;
 }
 
@@ -134,10 +139,18 @@ function enter() {
     words += -1;
 }
 
+// create chars on keyboard
+function createChars(element, c) {
+
+    element.textContent = c;
+    keyboardDiv.appendChild(element);
+}
+
 // counting words on textArea
 function countWords() {
     counter.textContent = `Words: ${words}`;
     ++words;
 }
 
+clearText();
 countWords();
