@@ -1,8 +1,6 @@
 // TODO 
 // shift
-// weird behavior of textArea. If you typed something with your keyboard, 
-//                             you cannot write with the online keyboard
-// responsive
+// better responsive
 
 // All keyboard chars
 const keyboardChars = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE",
@@ -115,8 +113,6 @@ function capslock() {
 
     isCapsLock = !isCapsLock;
     words += -1;
-
-
 }
 
 // shift char
